@@ -21,25 +21,40 @@
 
 class SimpleTable
 
-	def initialize(args)
-		@args = args
+	def initialize
 		@num_rows = 1
 		@width = []
 		@headings = []
-		@args.each_pair do |key,value|
-			@headings << key
-			#@width << key.length + value
-			value.each_pair do |k, v|
-				@width << k.length + v
-			end
 
-		end
-		
-
-		#@args.each_key {|x| headings << x }
+		@total_width = 0
 
 	end
-		
+	
+	def title(title, extra_width)
+		@width << title.length + extra_width
+		@headings << [title, extra_width]
+
+		@line = ["."]
+		@width.each do |x|
+			@line << "+" if @line.size > 1
+			x.times {|y| @line << "-"}
+		end
+		@line << "."
+
+		@words = []
+
+		#draw the line for each heading
+		@headings.each do |head|
+		  @words << "|" << " " << head[0]
+			(head[1]-1).times {|x| @words << " "}
+		end
+		@words << "|"
+
+		#how wide is everything?
+		@total_width += title.length + extra_width
+
+	end
+
 	def construct
 		@line = []
 		@line << "."
@@ -63,19 +78,19 @@ class SimpleTable
 		puts @line.join
 		puts @words.join
 		puts @line.join
-		puts @headings.join(" ")
+		puts @total_width
 	end
 
 end
 
+#Instead of that...
+#table = SimpleTable.new
+#table.heading(Six, 6)
+#table.heading(Twelve, 12)
+#table.heading("Hello there", 2)
 
-
-table = SimpleTable.new(["Six", 6], ["Twelve", 12], ["Hello there stranger", 2])
-table2 = SimpleTable.new(["Six", 6], ["Hello there stranger", 2], ["Twelve", 12])
-table3 = SimpleTable.new("Hello there stranger" => 2, "Twelve" => 12, "Six" => 6)
-table.construct
+table = SimpleTable.new
+table.title("Two", 15)
+table.title("The Black Knight", 5)
+table.title("A", 1)
 table.draw
-table2.construct
-table2.draw
-table3.construct
-table3.draw
